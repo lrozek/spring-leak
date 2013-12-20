@@ -1,0 +1,32 @@
+package pl.lrozek.spring.leak.main;
+
+import java.util.concurrent.ExecutionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+
+import pl.lrozek.spring.leak.config.AppConfig;
+import pl.lrozek.spring.leak.service.AsyncService;
+
+public class LeakMain {
+
+    public static void main( String[] args ) throws InterruptedException, ExecutionException {
+        int i = 0;
+        for ( ; i < 1000; i++ ) {
+            AbstractApplicationContext applicationContext = new AnnotationConfigApplicationContext( AppConfig.class );
+            AsyncService asyncService = applicationContext.getBean( AsyncService.class );
+
+            String calleeThreadName = asyncService.doAsyncWork().get();
+            String callerThreadName = Thread.currentThread().getName();
+            boolean areThreadsTheSame = calleeThreadName.equals( callerThreadName );
+            logger.info( "calleeThreadName is {}, callerThreadName is {}, areThreadsTheSame: {}", calleeThreadName, callerThreadName, areThreadsTheSame );
+            applicationContext.close();
+        }
+        logger.info( "end" );
+    }
+
+    private static Logger logger = LoggerFactory.getLogger( LeakMain.class );
+
+}
