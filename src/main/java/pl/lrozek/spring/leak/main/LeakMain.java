@@ -14,17 +14,16 @@ public class LeakMain {
 
     public static void main( String[] args ) throws InterruptedException, ExecutionException {
         int i = 0;
-        for ( ; i < 1000; i++ ) {
+        for ( ;; i++ ) {
             AbstractApplicationContext applicationContext = new AnnotationConfigApplicationContext( AppConfig.class );
             AsyncService asyncService = applicationContext.getBean( AsyncService.class );
 
             String calleeThreadName = asyncService.doAsyncWork().get();
             String callerThreadName = Thread.currentThread().getName();
             boolean areThreadsTheSame = calleeThreadName.equals( callerThreadName );
-            logger.info( "calleeThreadName is {}, callerThreadName is {}, areThreadsTheSame: {}", calleeThreadName, callerThreadName, areThreadsTheSame );
+            logger.info( "{} calleeThreadName is {}, callerThreadName is {}, areThreadsTheSame: {}", i, calleeThreadName, callerThreadName, areThreadsTheSame );
             applicationContext.close();
         }
-        logger.info( "end" );
     }
 
     private static Logger logger = LoggerFactory.getLogger( LeakMain.class );
