@@ -13,6 +13,8 @@
         <logback.version>1.0.13</logback.version>
         <xmx>-Xmx128m</xmx>
         <perm>-XX:MaxPermSize=256m</perm>
+        <classLoading>-XX:-TraceClassLoading</classLoading>
+        <classUnloading>-XX:-TraceClassUnloading</classUnloading>
     </properties>
 
     <dependencies>
@@ -49,12 +51,14 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <argument>-classpath</argument>
-                        <classpath />
                         <argument>${xmx}</argument>
                         <argument>${perm}</argument>
+                        <argument>${classLoading}</argument>
+                        <argument>${classUnloading}</argument>
                         <argument>-XX:+PrintGCDetails</argument>
                         <argument>-XX:+HeapDumpOnOutOfMemoryError</argument>
+                        <argument>-classpath</argument>
+                        <classpath />
                         <argument>pl.lrozek.spring.leak.main.LeakMain</argument>
                     </arguments>
                 </configuration>
@@ -89,6 +93,8 @@
             <properties>
                 <xmx>-Xmx1G</xmx>
                 <perm>-XX:MaxPermSize=64m</perm>
+                <classLoading>-XX:+TraceClassLoading</classLoading>
+                <classUnloading>-XX:+TraceClassUnloading</classUnloading>
             </properties>
         </profile>
     </profiles>
